@@ -1,5 +1,6 @@
 package org.leceido.todosimple.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,8 @@ import java.util.Objects;
 @Entity
 @Table(name = User.TABLE_NAME)
 public class User {
+
+    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }
