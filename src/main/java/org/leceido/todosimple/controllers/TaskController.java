@@ -30,7 +30,7 @@ public class TaskController {
         return ResponseEntity.ok(obj);
     }
 
-    @PostMapping
+    @PostMapping("/")
     @Validated
     public ResponseEntity<Void> create(@Valid @RequestBody Task obj) {
         this.taskService.create(obj);

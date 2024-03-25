@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,13 +20,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/")
+    public ResponseEntity<List<User>> findAll() {
+        List<User> obj = this.userService.findAll();
+        return ResponseEntity.ok().body(obj);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         User obj = this.userService.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 
-    @PostMapping
+    @PostMapping("/")
     @Validated(User.CreateUser.class)
     public ResponseEntity<Void> create(@Valid @RequestBody User obj) {
         this.userService.create(obj);
