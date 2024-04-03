@@ -1,6 +1,7 @@
 package org.leceido.todosimple.services;
 
 
+import org.leceido.todosimple.exceptions.ObjectNotFoundException;
 import org.leceido.todosimple.models.Task;
 import org.leceido.todosimple.models.User;
 import org.leceido.todosimple.repositories.TaskRepository;
@@ -22,7 +23,7 @@ public class TaskService {
 
     public Task findById(Long id) {
         Optional<Task> task = this.taskRepository.findById(id);
-        return task.orElseThrow(() -> new RuntimeException(
+        return task.orElseThrow(() -> new ObjectNotFoundException(
                 "Task não encontrada! Id: " + id + ", Tipo: " + Task.class.getName()
         ));
     }

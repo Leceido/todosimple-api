@@ -1,5 +1,6 @@
 package org.leceido.todosimple.services;
 
+import org.leceido.todosimple.exceptions.ObjectNotFoundException;
 import org.leceido.todosimple.models.User;
 import org.leceido.todosimple.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> user = this.userRepository.findById(id);
-        return user.orElseThrow(() -> new RuntimeException(
+        return user.orElseThrow(() -> new ObjectNotFoundException(
                 "Usuario não encontrado! Id: " + id + ", Tipo: " + User.class.getName()
         ));
     }
