@@ -27,6 +27,10 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    public String toJson() {
+        return "{\"status\": " + getStatus() + ", " + "\"message\": \"" + getMessage() + "\"}";
+    }
+
 
     private static class ValidationError {
         private final String field;
