@@ -1,15 +1,19 @@
 package org.leceido.todosimple.services;
 
+import org.leceido.todosimple.exceptions.AuthorizationException;
 import org.leceido.todosimple.exceptions.ObjectNotFoundException;
 import org.leceido.todosimple.models.User;
 import org.leceido.todosimple.models.enums.ProfileEnum;
 import org.leceido.todosimple.repositories.UserRepository;
+import org.leceido.todosimple.security.UserSpringSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +34,10 @@ public class UserService {
     }
 
     public User findById(Long id) {
+        UserSpringSecurity userSpringSecurity = authenticated();
+        if (!Objects.nonNull(userSpringSecurity) || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId())) {
+            throw new AuthorizationException("Acesso negado!");
+        }
         Optional<User> user = this.userRepository.findById(id);
         return user.orElseThrow(() -> new ObjectNotFoundException(
                 "Usuario não encontrado! Id: " + id + ", Tipo: " + User.class.getName()
@@ -59,6 +67,14 @@ public class UserService {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Não é possivel excluir pois há entidades relacionadas");
+        }
+    }
+
+    public static UserSpringSecurity authenticated() {
+        try {
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
         }
     }
 
